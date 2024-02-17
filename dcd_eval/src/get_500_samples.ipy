@@ -1,0 +1,29 @@
+import json
+import random
+
+def select_unique_samples(jsonl_file_path, num_samples=500):
+    # Read and load the lines of the JSONL file
+    with open(jsonl_file_path, 'r', encoding='utf-8') as file:
+        json_data = json.load(file)["examples"]
+
+    # Parse each line as JSON
+    data = [line for line in json_data]
+
+    # Select a unique subset of the data
+    if len(data) >= num_samples:
+        unique_samples = random.sample(data, num_samples)
+    else:
+        raise ValueError("Not enough unique items in the file to sample")
+
+    # Save the sampled data to a new JSONL file
+    with open('sampled_data.jsonl', 'w', encoding='utf-8') as file:
+        for item in unique_samples:
+            json.dump(item, file)
+            file.write('\n')
+
+    return 'sampled_data.jsonl'
+
+# Usage
+jsonl_file_path = '/home/pphuc/Coding/Project/contrastive-decoding/text-generation/data/strategyQA.json'  # Replace with your JSONL file path
+output_file = select_unique_samples(jsonl_file_path)
+print(f"Sampled data saved to {output_file}")
