@@ -11,5 +11,10 @@ authors = [
 requires-python = ">=3.8"
 dependencies = [
     "transformers",
-    "accelerate"
+    "accelerate",
+    "jsonlines",
+    "pandas"
 ]
+
+[tool.setuptools.packages.find]
+where = ["src"]
