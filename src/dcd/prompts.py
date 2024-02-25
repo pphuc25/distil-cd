@@ -271,7 +271,7 @@ def create_prompt_student(args_data_prompt, type=None, data_name="gsm8k"):
         if data_name == "gsm8k":
             return instruct_prompt
         else:
-            raise ValueError("There's no data demonstration with data not being gsm8k.")
+            raise ValueError("Currently there's no synthetic demonstration prompt with datasets not gsm8k.")
 
     demo_text = ""
     answer_name_dict = {"gsm8k": "AnswerWrong", "strategyqa": "AnswerStrategyQAWrong"}

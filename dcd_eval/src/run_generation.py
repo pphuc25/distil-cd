@@ -44,11 +44,9 @@ def get_args():
     parser.add_argument("--quantize_4bit_student", action="store_true")
     parser.add_argument("--quantize_8bit_student", action="store_true")
     parser.add_argument("--dropout_num", type=float, default=None)
-    parser.add_argument("--use_compile", action="store_true")
     parser.add_argument("--constractive_prompt_student", type=int, default=None)
     parser.add_argument("--direct_answer_trigger_for_fewshot", type=str, default='The answer is')
     parser.add_argument("--cot_flag", action="store_true")
-    parser.add_argument("--use_cs_prompt", action="store_true")
     parser.add_argument("--enable_flash_attn2", action="store_true")
     parser.add_argument("--fp16", action="store_true")
     parser.add_argument("--bf16", action="store_true")
@@ -118,28 +116,25 @@ def main():
         question_column_name = "question" if "question" in column_names else column_names[0]
         answer_column_name = "answer" if "answer" in column_names else column_names[1]
 
-        def format_question(example_question, args):
-            if args.use_cs_prompt:
-                return "Question: " + example_question + "\nExplanation:"
-            if args.constractive_prompt_student == 4:
-                return "Original: " + example_question + "\nTwisted:"
-            return "Q: " + example_question + "\nA:"
-
         def tokenize_function_processed(example):
-            example_question = format_question(example[question_column_name], args)
+            example_question = "Q: " + example[question_column_name] + "\nA:"
             example_answer = example[answer_column_name].strip()
             gold = answer_cleansing(args, example_answer)
-            inputs_question = tokenizer(create_prompt(args, type=5 if args.use_cs_prompt else None) + example_question, return_tensors="pt")
+            inputs_question = tokenizer(create_prompt(args) + example_question, return_tensors="pt")
             if args.constractive_prompt_student:
+                if args.constractive_prompt_student == 4:
+                    example_question = "Original: " + example[question_column_name] + "\nTwisted:"
                 inputs_question_student = tokenizer(
-                    create_prompt_student(args, type=args.constractive_prompt_student) + example_question, return_tensors="pt")
+                    create_prompt_student(args, type=args.constractive_prompt_student) + example_question, return_tensors="pt"
+                )
 
             example["gold"] = gold
             example['question_formated'] = example_question
             example['origin_question'] = example[question_column_name]
             example['input_ids'] = inputs_question['input_ids'][0]
             if args.constractive_prompt_student:
-                example['input_ids_student'] = inputs_question_student['input_ids'][0] if args.constractive_prompt_student else inputs_question['input_ids'][0]
+                example['input_ids_student'] = inputs_question_student['input_ids'][0]
+                example['attention_mask_student'] = inputs_question_student['attention_mask'][0]
             return example
 
         tokenized_datasets = datasets.map(
@@ -157,21 +152,26 @@ def main():
             for line in jsonlines.Reader(f):
                 q = line["input"].strip()
                 a = "yes" if int(line["target_scores"]["Yes"]) == 1 else "no"
-
-                example_question = "Question: " + q + "\nExplanation:" if args.use_cs_prompt else "Q: " + q + "\nA:"
-                inputs_question = create_prompt(args, data_name="strategyqa", type=6 if args.use_cs_prompt else None) + example_question
-
+                
+                example_question = "Q: " + q + "\nA:"
+                inputs_question = create_prompt(args, data_name="strategyqa") + example_question
                 if args.constractive_prompt_student:
-                    example_question = "Original: " + q + "\nTwisted:" if args.constractive_prompt_student == 4 else example_question
                     inputs_question_student = create_prompt_student(args, type=args.constractive_prompt_student, data_name="strategyqa") + example_question
                 else:
                     inputs_question_student = []
 
+                if inputs_question_student:
+                    inputs_students_tokenized = tokenizer(inputs_question_student, return_tensors="pt")
+                    input_ids_student = inputs_students_tokenized['input_ids'][0]
+                    attention_mask_student = inputs_students_tokenized['attention_mask'][0]
+                else:
+                    input_ids_student, attention_mask_student = [], []
                 data_temp = {
                     'question_formated': inputs_question,
                     'gold': a,
                     'input_ids': tokenizer(inputs_question, return_tensors="pt")['input_ids'][0],
-                    'input_ids_student': tokenizer(inputs_question_student, return_tensors="pt")['input_ids'][0] if inputs_question_student else [],
+                    'input_ids_student': input_ids_student,
+                    'attention_mask_student': attention_mask_student,
                     'origin_question': q
                 }
                 tokenized_datasets.append(data_temp)
@@ -181,11 +181,6 @@ def main():
 
     use_student_lm = True if student_lm != None else None
 
-    if args.use_compile:
-        model = torch.compile(model, mode="reduce-overhead", fullgraph=True)
-        if use_student_lm:
-            student_lm = torch.compile(
-                student_lm, mode="reduce-overhead", fullgraph=True)
     model.eval()
 
     input_ids_student = None
@@ -217,21 +212,26 @@ def main():
         dropout_rate=args.dropout_num
     )
 
-    def generate_output_sequences(model, input_ids, input_ids_student=None, inputs_={}):
+    def generate_output_sequences(model, input_ids, input_ids_student=None, attention_mask_student=None, inputs_={}):
         with torch.no_grad():
-            return model.generate(input_ids=input_ids, input_ids_student=input_ids_student, **inputs_)
+            model_kwargs_student = dict(
+                attention_mask=attention_mask_student
+            )
+            return model.generate(input_ids=input_ids, input_ids_student=input_ids_student, model_kwargs_student=model_kwargs_student, **inputs_)
 
 
     def process_prompt_text(args, model, tokenizer, inputs_, prompt_text):
         input_ids = torch.Tensor(prompt_text['input_ids']).long().to(args.device).unsqueeze(0)
-        input_ids_student = None
+        input_ids_student, attention_mask_student = None, None
 
         if args.constractive_prompt_student:
             input_ids_student = torch.Tensor(prompt_text['input_ids_student']).long().to(args.device).unsqueeze(0)
-
-        output_sequences = generate_output_sequences(model, input_ids, input_ids_student, inputs_)
-        output = tokenizer.decode(output_sequences.sequences[0], clean_up_tokenization_spaces=True)
-
+            attention_mask_student = torch.Tensor(prompt_text['attention_mask_student']).long().to(args.device).unsqueeze(0)
+            
+        output_sequences = generate_output_sequences(model, input_ids, input_ids_student, attention_mask_student, inputs_)
+        output = tokenizer.decode(output_sequences.sequences[0][len(input_ids[0]):], clean_up_tokenization_spaces=True)
+        print(output)
+        
         if args.prompt_file in ("gsm8k", "strategyqa"):
             model_answer = answer_cleansing(args, output, question=prompt_text['origin_question'])
             is_correct_result = is_correct(model_answer, prompt_text['gold'])

@@ -44,6 +44,9 @@ tokenizer = AutoTokenizer.from_pretrained("model_name", device_map="auto")
 # Set the generation configuration
 generation_config = GenerationConfig(
     num_beams=1,
+    
+    # The settings provided here are compatible with most models. 
+    # Feel free to modify the pad and eos token IDs as needed for your specific use case!
     pad_token_id=0,
     eos_token_id=0,
 )
