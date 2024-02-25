@@ -1,11 +1,10 @@
 # Distillation Contrastive Decoding: Improving LLMs Reasoning with Contrastive Decoding and Distillation
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pphuc25/distil-cd/tree/main/examples/dcd_quickstart.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pphuc25/distil-cd/blob/main/examples/dcd_quickstart.ipynb)
 
 
-This is the official repository for "[Distillation Contrastive Decoding: Improving LLMs Reasoning with Contrastive Decoding and Distillation]()"  
-by [Phuc Phan](https://www.linkedin.com/in/pphuc/), [Hieu Tran](https://www.linkedin.com/in/hieutt0/) and [Long Phan](https://www.linkedin.com/in/long-phan-3110/)
-
+This is the official repository for "[Distillation Contrastive Decoding: Improving LLMs Reasoning with Contrastive Decoding and Distillation](x) (Coming Soon)"
+by [Phuc Phan](https://github.com/pphuc25), [Hieu Tran](https://github.com/heraclex12) and [Long Phan](https://github.com/justinphan3110)
 
 
 ## Introduction
@@ -14,8 +13,6 @@ In our paper, we introduce Distillation Contrastive Decoding (DCD), a novel appr
 DCD addresses the limitations of existing Contrastive Decoding techniques, such as the need for smaller parallel models and high memory usage, offering a more efficient and scalable solution. Our extensive evaluations across various reasoning benchmarks, including arithmetic and commonsense reasoning tasks, demonstrate the superior performance of DCD, marking a significant advancement in the field of natural language processing and LLM reasoning enhancement.
 
 <img align="center" src="assets/figure1-method.jpg" width="750">
-
-<!-- <img align="center" src="assets/compare_methods.jpg" width="750"> -->
 
 
 ## Installation
@@ -97,5 +94,5 @@ To facilitate easier evaluation or reproduction of DCD results, we have released
 If you find this useful in your research, please consider citing:
 
 ```
-
+Comming soon
 ```
