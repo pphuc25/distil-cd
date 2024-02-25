@@ -1,5 +1,7 @@
 # Distillation Contrastive Decoding: Improving LLMs Reasoning with Contrastive Decoding and Distillation
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pphuc25/distil-cd/tree/main/examples/dcd_quickstart.ipynb)
+
 
 This is the official repository for "[Distillation Contrastive Decoding: Improving LLMs Reasoning with Contrastive Decoding and Distillation]()"  
 by [Phuc Phan](https://www.linkedin.com/in/pphuc/), [Hieu Tran](https://www.linkedin.com/in/hieutt0/) and [Long Phan](https://www.linkedin.com/in/long-phan-3110/)
