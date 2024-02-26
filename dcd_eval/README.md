@@ -2,8 +2,7 @@
 
 ## Overview
 
-This package provides a method for evaluating the performance of Language Learning Models (LLMs) on various standard benchmarks. For more information about the evaluation process, please refer to [our DCD paper]().
-
+This package provides a method for evaluating the performance of Language Learning Models (LLMs) on various standard benchmarks. For more information about the evaluation process, please refer to [our DCD paper](https://arxiv.org/abs/2402.14874?fbclid=IwAR2HOn0kzLgsTsSyXOSEYnRRyzLFA7-AmmQ35P3TRJRT_dA5Swn1jARXWlE).
 
 ## Installation
 
@@ -38,50 +37,55 @@ bash configs/combined/deepseak/quantize-strategy-deepseek-7b-base-beta08.sh
 
 ### Main Arguments
 
-| Argument                        | Example                    | Description                                                                                                                                    |
-| ------------------------------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--model_name_or_path`          | `meta-llama/Llama-2-7b-hf` | Specifies the model to be used.                                                                                                           |
-| `--student_name_or_path`        | `TheBloke/Llama-2-7B-AWQ`  | Specifies the student model to be used. In our context, it's the quantized model.|
-| `--prompt_file`                 | `gsm8k`                    | The name of the dataset to be evaluated on the test set.|
+| Argument                        | Example                    | Description                                                                                                                                                 |
+| ------------------------------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--model_name_or_path`          | `meta-llama/Llama-2-7b-hf` | Specifies the model to be used.                                                                                                                             |
+| `--student_name_or_path`        | `TheBloke/Llama-2-7B-AWQ`  | Specifies the student model to be used. In our context, it's the quantized model.                                                                           |
+| `--prompt_file`                 | `gsm8k`                    | The name of the dataset to be evaluated on the test set.                                                                                                    |
 | `--constractive_prompt_student` | `4`                        | The types of contrastive CoT prompting for the amateur model. The number corresponds with the prompting detail in the paper (See appendix for more detail). |
-| `--outfile`                     | `output_path.json`         | The location to store the output results. |
-| `--alpha_coef`                  | `1`                        | The threshold for plausibility.                                                                                                                |
-| `--beta_coef`                   | `27`                       | The strength of the amateur model compared to the expert model or the adjustment factor for the amateur penalty.                                          |
-| `--dropout_num`                 | `0.1`                      | The dropout rate of the amateur model.                                                                                                             |
+| `--outfile`                     | `output_path.json`         | The location to store the output results.                                                                                                                   |
+| `--alpha_coef`                  | `1`                        | The threshold for plausibility.                                                                                                                             |
+| `--beta_coef`                   | `27`                       | The strength of the amateur model compared to the expert model or the adjustment factor for the amateur penalty.                                            |
+| `--dropout_num`                 | `0.1`                      | The dropout rate of the amateur model.                                                                                                                      |
 
 ### Other Arguments
 
-| Argument           | Example    | Description                                                                                           |
-| ------------------ | ---------- | ----------------------------------------------------------------------------------------------------- |
-| `--cot_flag`       | `*enable*` | Add the flag text to extract the results. By default, the flag is "The answer is ". |
-| `--fp16`           | `*enable*` | The model will run in float 16 (with quantization on the amateur model, this setting only loads on the expert model). |
+| Argument           | Example    | Description                                                                                                            |
+| ------------------ | ---------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `--cot_flag`       | `*enable*` | Add the flag text to extract the results. By default, the flag is "The answer is ".                                    |
+| `--fp16`           | `*enable*` | The model will run in float 16 (with quantization on the amateur model, this setting only loads on the expert model).  |
 | `--bf16`           | `*enable*` | The model will run in bfloat 16 (with quantization on the amateur model, this setting only loads on the expert model). |
-| `--max_new_tokens` | `256`      | The maximum number of tokens generated by the model. |
+| `--max_new_tokens` | `256`      | The maximum number of tokens generated by the model.                                                                   |
 
 ### Understanding `--constractive_prompt_student`
 
 The `--constractive_prompt_student` argument accepts an integer from 1 to 4, each corresponding to a type of contrastive prompting. By specifying different types, we can adjust the decoding behavior of the amateur model.
 
-
 #### Arithmetic Task (GSM8K)
 
-| Types | Description of Types Contrastive CoT Prompting |
-| ----- | ---------------------------------------------- |
-| 1     | Rule-based Number Shuffle.                     |
-| 2 | Rule-based Number Shuffle with Calculation Wrong |
-| 3 | Synthetic Demonstration |
+| Types | Description of Types Contrastive CoT Prompting   |
+| ----- | ------------------------------------------------ |
+| 1     | Rule-based Number Shuffle.                       |
+| 2     | Rule-based Number Shuffle with Calculation Wrong |
+| 3     | Synthetic Demonstration                          |
 
 #### Commonsense Task (StrategyQA)
 
 | Types | Description of Types Contrastive CoT Prompting |
 | ----- | ---------------------------------------------- |
-| 1     | Synthetic Demonstration.                     |
-
+| 1     | Synthetic Demonstration.                       |
 
 ## Citation
 
 If you find this useful in your research, please consider citing:
 
 ```
-
+@misc{phan2024distillation,
+      title={Distillation Contrastive Decoding: Improving LLMs Reasoning with Contrastive Decoding and Distillation},
+      author={Phuc Phan and Hieu Tran and Long Phan},
+      year={2024},
+      eprint={2402.14874},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
 ```
