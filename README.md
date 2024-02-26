@@ -1,5 +1,6 @@
 # Distillation Contrastive Decoding: Improving LLMs Reasoning with Contrastive Decoding and Distillation
 
+[![Arxiv](https://img.shields.io/badge/arXiv-2309.03883-B21A1B)](https://arxiv.org/abs/2402.14874)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pphuc25/distil-cd/blob/main/examples/dcd_quickstart.ipynb)
 
 
