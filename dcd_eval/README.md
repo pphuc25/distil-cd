@@ -2,7 +2,7 @@
 
 ## Overview
 
-This package provides a method for evaluating the performance of Language Learning Models (LLMs) on various standard benchmarks. For more information about the evaluation process, please refer to [our DCD paper](https://arxiv.org/abs/2402.14874?fbclid=IwAR2HOn0kzLgsTsSyXOSEYnRRyzLFA7-AmmQ35P3TRJRT_dA5Swn1jARXWlE).
+This package provides a method for evaluating the performance of Language Learning Models (LLMs) on various standard benchmarks. For more information about the evaluation process, please refer to [our DCD paper](https://arxiv.org/abs/2402.14874).
 
 ## Installation
 

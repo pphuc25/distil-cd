@@ -3,7 +3,7 @@
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pphuc25/distil-cd/blob/main/examples/dcd_quickstart.ipynb)
 
 
-This is the official repository for "[Distillation Contrastive Decoding: Improving LLMs Reasoning with Contrastive Decoding and Distillation](https://arxiv.org/abs/2402.14874?fbclid=IwAR2HOn0kzLgsTsSyXOSEYnRRyzLFA7-AmmQ35P3TRJRT_dA5Swn1jARXWlE)"
+This is the official repository for "[Distillation Contrastive Decoding: Improving LLMs Reasoning with Contrastive Decoding and Distillation](https://arxiv.org/abs/2402.14874)"
 by [Phuc Phan](https://github.com/pphuc25), [Hieu Tran](https://github.com/heraclex12) and [Long Phan](https://github.com/justinphan3110)
 
 
