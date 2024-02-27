@@ -91,7 +91,7 @@ Check out [examples](./examples) of Distillation Contrastive Decoding (DCD), con
 
 ## DCD Evaluation
 
-To facilitate easier evaluation or reproduction of DCD results, we have released a package framework, [DCD_eval](./dcd_eval), designed for few-shot evaluation of both arithmetic and commonsense reasoning on standard benchmarks. For more detailed information, please refer to our [paper]().
+To facilitate easier evaluation or reproduction of DCD results, we have released a package framework, [DCD_eval](./dcd_eval), designed for few-shot evaluation of both arithmetic and commonsense reasoning on standard benchmarks. For more detailed information, please refer to our [paper](https://arxiv.org/abs/2402.14874).
 
 
 ## Citation
